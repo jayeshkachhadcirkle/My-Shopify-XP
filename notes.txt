@@ -1,0 +1,102 @@
+https://admin.shopify.com/store/jayesh-cirkle
+
+Link in input settings
+"info": "Know More  [Here](https://help.shopify.com/manual/online-store/dynamic-checkout)"
+
+
+{
+      "type": "",
+      "id": "",
+      "label": "",
+	"options":[{},{}],
+      "default": 1
+    }
+
+
+_Setting_1igpc_1 _DenseSetting_1igpc_15
+
+"{% if customer %} {{ "Welcome Mr. " | append: customer.name }} {% endif %}"
+
+
+{% for link in linklists['supermenu'].links %}
+  <li class="level1">1.{{ link.title }}</li>
+
+  {% for link in link.links %}
+    <li class="level2">2.{{ link.title }}</li>
+
+      {% for link in link.links %}
+        <li class="level3">3.{{ link.title }}</li>
+        
+      {% endfor %}
+  {% endfor %}
+{% endfor %}
+
+
+
+
+{% if section.settings.link != blank %}  href="{{ section.settings.link }}" {% else %} role="link" aria-disabled="true" {% endif %}
+
+
+{% if link.url.size > 1 %} href="{{ link.url }}" {% else %} role="link" aria-disabled="true" {% endif %}
+
+
+product add to cart api references
+https://shopify.dev/docs/api/ajax/reference/cart
+
+
+let url = 'https://' + window.Shopify.shop +  document.getElementById('recommendor').getAttribute('data-url').replace('products', 'products.json')
+
+product medias
+
+
+Make a Complaete product
+
+
+product form minimum requirenments
+Qty input id
+
+
+======================================================
+    <script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+
+	<script src="https://vjs.zencdn.net/7.2.3/video.js"></script>
+
+
+
+
+=======================================================
+  setTimeout(function(){
+     const reco_submit = document.getElementById('reco_submit');
+        reco_submit.addEventListener('click', function(){
+          console.log('Clicked')
+          let d = [];
+          let url = 'https://' + window.Shopify.shop +  document.getElementById('recommendor').getAttribute('data-url').replace('products', 'products.json')
+          fetch(url)
+          .then(response => response.json())
+          .then((data) => {
+              // console.log(data["products"])
+              let pArray = (data["products"]);
+              pArray.forEach(function(p){
+                d.push(p)
+              })
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+
+          // console.log(d)
+          // console.log(d.id)
+          // console.log(d[0])
+          // console.log(d['title'])
+          // console.log(d)
+        })
+    },1000)
+
+==========================================================
+
+
+document.getElementsByClassName('plus')[0].parentElement.getElementsByTagName('input')[0].value= 1
+
+========================================================
+cart-table-lft

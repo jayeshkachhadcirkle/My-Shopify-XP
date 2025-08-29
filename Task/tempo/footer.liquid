@@ -1,0 +1,205 @@
+
+<div class="container">
+    {% if section.blocks.size !=0 %}
+      <div class="footer-top flex pt-50 pb-50">
+
+        {% comment %}
+          
+
+
+        {% endcomment %}
+    <div class="footer-left flex">
+        {% for block in section.blocks limit:2 %}
+                <div class="footer-column">
+                    <div class="footer-widget">
+                        
+                  {% case block.type %}
+                    {% when 'footer-block-about' %}
+                      {% if block.settings.block-desc != blank %}
+                        <p>{{ block.settings.block-desc }}</p>
+                      {% endif %}
+
+                    {% if block.settings.socialcheck %}
+                        <div class="footer-social pt-30">
+                            <ul class="flex align-center">
+                                <li>
+                                    <a href="{{ settings.instagram-link }}" target="_blank">
+                                        {%- render 'icons', icon_type: 'instagram' -%}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ settings.facebook-link }}" target="_blank">
+                                        {%- render 'icons', icon_type: 'facebook' -%}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ settings.twitter-link }}" target="_blank">
+                                        {%- render 'icons', icon_type: 'twitter' -%}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ settings.pinterest-link }}" target="_blank">
+                                        {%- render 'icons', icon_type: 'pinterest' -%}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                      {% when 'footer-block-menu' %}
+                    
+                        {% if block.settings.block-heading != blank %}
+                        <h4 class="pb-20">{{ block.settings.block-heading }}</h4>
+                        {% endif %}
+
+                        <ul>
+                            {% for link in block.settings.linklist-picked %}
+                                <li> link </li>
+                            {% endfor %}
+                    {% comment %}
+                      
+                            {% if block.settings.link1-title != blank %} <li><a href="{{ block.settings.block-link1 }}">{{ block.settings.link1-title }}</a></li> {% endif %}
+                    {% endcomment %}
+                
+                        </ul>
+
+                    {% else %}
+                      
+                  {% endcase %}
+          
+                    </div>
+                </div>
+        {% endfor %}
+  </div>
+
+      
+    <div class="footer-right flex">
+        {% for block in section.blocks offset:2 %}
+                
+        {% endfor %}
+  </div>
+
+                                              
+                                
+        
+      </div>
+    {% endif %}
+
+
+                                              
+      <div class="align-center flex footer-bottom justify-between pt-30 pb-30">
+          <div class="footer-copyright">
+              <p>© {{ "now" | date: "%Y" }} innovacare All Rights Reserved </p>
+          </div>
+        {% if section.settings.pay1 != blank or section.settings.pay2 != blank or section.settings.pay3 != blank %}
+        
+          
+          <div class="footer-payment">
+              <ul class="flex justify-center align-center playment-links">
+                {% if section.settings.pay1 != blank %}
+                  <li>
+                      <a href="{{ section.settings.pay1link }}" target="_blank"><img src="{{ section.settings.pay1 | image_url: width: 100, height: 100 }}" loading="lazy"></a>
+                  </li>
+                {% endif %}
+                {% if section.settings.pay2 != blank %}
+                  <li>
+                      <a href="{{ section.settings.pay2link }}" target="_blank"><img src="{{ section.settings.pay2 | image_url: width: 100, height: 100 }}" loading="lazy"></a>
+                  </li>
+                {% endif %}
+                {% if section.settings.pay3 != blank %}
+                  <li>
+                      <a href="{{ section.settings.pay3link }}" target="_blank"><img src="{{ section.settings.pay3 | image_url: width: 100, height: 100 }}" loading="lazy"></a>
+                  </li>
+                {% endif %}
+                {% comment %}
+                {% endcomment %}
+              </ul>
+          </div>
+        {% endif %}
+      </div>
+  </div>
+</footer>
+
+
+{% schema %}
+{
+  "name": "Footer",
+  "blocks": [
+    
+    {
+      "name":"Footer Blocks About",
+      "type":"footer-block-about",
+      "limit": 1,
+      "settings":[
+            {
+                "type": "textarea",
+                "id": "block-desc",
+                "label": "Footer Left Text"
+            },
+            {
+                "type": "checkbox",
+                "id": "socialcheck",
+                "label": "Social icon",
+                "default": false
+            }
+      ]
+    },
+    {
+      "name":"Footer Blocks Menu",
+      "type":"footer-block-menu",
+      "limit": 3,
+      "settings":[
+            {
+                "type": "text",
+                "id": "block-heading",
+                "label": "Block Heading",
+                "default": "Heading"
+            },
+            {
+              "type": "link_list",
+              "id": "linklist-picked",
+              "label": "Select Menu"
+            }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "pay1",
+      "label": "Pay Option 1"
+    },
+    {
+      "type": "url",
+      "id": "pay1link",
+      "label": "Pay 1 Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "pay2",
+      "label": "Pay Option 2"
+    },
+    {
+      "type": "url",
+      "id": "pay2link",
+      "label": "Pay 2 Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "pay3",
+      "label": "Pay Option 3"
+    },
+    {
+      "type": "url",
+      "id": "pay3link",
+      "label": "Pay 3 Link"
+    }
+  ],
+  "presets":[
+    {
+      "name": "Footer"
+    }
+  ]
+}
+{% endschema %}
+

@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monaco Editor Code Playground</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #21262d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e6edf3;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #21262d 0%, #30363d 100%);
+            color: #e6edf3;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #30363d;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .language-selector label {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .language-select {
+            padding: 10px 20px;
+            border: 1px solid #30363d;
+            border-radius: 25px;
+            background: rgba(33, 38, 45, 0.8);
+            color: #e6edf3;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 150px;
+        }
+
+        .language-select:hover {
+            background: rgba(48, 54, 61, 0.9);
+            border-color: #58a6ff;
+            transform: translateY(-2px);
+        }
+
+        .language-select option {
+            background: #21262d;
+            color: #e6edf3;
+            padding: 10px;
+        }
+
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(33, 38, 45, 0.3) 0%, rgba(48, 54, 61, 0.2) 100%);
+        }
+
+        .welcome-screen h2 {
+            font-size: 36px;
+            color: #e6edf3;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .welcome-screen p {
+            font-size: 18px;
+            color: #8b949e;
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .language-card {
+            background: rgba(33, 38, 45, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(48, 54, 61, 0.5);
+        }
+
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: #58a6ff;
+            background: rgba(48, 54, 61, 0.9);
+        }
+
+        .language-card h3 {
+            font-size: 18px;
+            color: #e6edf3;
+            font-weight: 600;
+        }
+
+        .editor-container {
+            flex: 1;
+            display: none;
+            position: relative;
+        }
+
+        .editor-toolbar {
+            background: #161b22;
+            padding: 15px 20px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .current-language {
+            background: #238636;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #238636;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6e7681;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #8b949e;
+            transform: translateY(-2px);
+        }
+
+        #editor {
+            height: calc(100% - 60px);
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            font-size: 18px;
+            color: #58a6ff;
+        }
+
+        .save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #238636;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .save-indicator.error {
+            background: #da3633;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Monaco Code Playground</h1>
+            <div class="language-selector" style="display: none;">
+                <label for="languageSelect">Language:</label>
+                <select id="languageSelect" class="language-select">
+                    <option value="javascript">JavaScript</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="python">Python</option>
+                    <option value="liquid">Liquid</option>
+                    <option value="java">Java</option>
+                    <option value="php">PHP</option>
+                    <option value="json">JSON</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="welcomeScreen" class="welcome-screen">
+            <h2>Welcome to Monaco Code Playground</h2>
+            <p>Choose your programming language to start coding with syntax highlighting, IntelliSense, and error detection powered by Monaco Editor.</p>
+            
+            <div class="language-grid">
+                <div class="language-card" data-language="javascript">
+                    <h3>JavaScript</h3>
+                </div>
+                <div class="language-card" data-language="html">
+                    <h3>HTML</h3>
+                </div>
+                <div class="language-card" data-language="css">
+                    <h3>CSS</h3>
+                </div>
+                <div class="language-card" data-language="python">
+                    <h3>Python</h3>
+                </div>
+                <div class="language-card" data-language="liquid">
+                    <h3>Liquid</h3>
+                </div>
+                <div class="language-card" data-language="java">
+                    <h3>Java</h3>
+                </div>
+                <div class="language-card" data-language="php">
+                    <h3>PHP</h3>
+                </div>
+                <div class="language-card" data-language="json">
+                    <h3>JSON</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="editorContainer" class="editor-container">
+            <div class="editor-toolbar">
+                <div class="editor-info">
+                    <span class="current-language" id="currentLanguage">JavaScript</span>
+                    <span id="editorStatus">Ready to code</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="btn btn-secondary" id="clearBtn">Clear</button>
+                    <button class="btn btn-secondary" id="loadBtn">Load Saved</button>
+                    <button class="btn btn-primary" id="newLanguageBtn">Change Language</button>
+                </div>
+            </div>
+            <div id="editor"></div>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            Loading Monaco Editor...
+        </div>
+
+        <div class="save-indicator" id="saveIndicator">
+            💾 Code saved successfully!
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <script>
+        let editor = null;
+        let currentLanguage = '';
+        const SAVE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+        // In-memory storage system for Claude.ai environment
+        const codeStorage = {
+            data: {},
+            
+            save: function(language, code) {
+                if (!language || code === undefined) return false;
+                
+                try {
+                    this.data[language] = {
+                        code: code,
+                        timestamp: Date.now(),
+                        expiresAt: Date.now() + SAVE_DURATION
+                    };
+                    return true;
+                } catch (error) {
+                    console.error('Failed to save code:', error);
+                    return false;
+                }
+            },
+            
+            load: function(language) {
+                try {
+                    const savedData = this.data[language];
+                    
+                    if (!savedData) return null;
+                    
+                    // Check if expired
+                    if (Date.now() > savedData.expiresAt) {
+                        delete this.data[language];
+                        return null;
+                    }
+                    
+                    return savedData;
+                } catch (error) {
+                    console.error('Failed to load code:', error);
+                    return null;
+                }
+            },
+            
+            cleanup: function() {
+                const now = Date.now();
+                Object.keys(this.data).forEach(key => {
+                    if (this.data[key].expiresAt < now) {
+                        delete this.data[key];
+                    }
+                });
+            }
+        };
+
+        // Save/Load functionality
+        function saveCodeToStorage() {
+            if (!editor || !currentLanguage) return false;
+            return codeStorage.save(currentLanguage, editor.getValue());
+        }
+
+        function loadCodeFromStorage(language) {
+            return codeStorage.load(language);
+        }
+
+        function showSaveIndicator(success = true, message = '💾 Code saved successfully!') {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.textContent = message;
+            indicator.className = 'save-indicator';
+            
+            if (!success) {
+                indicator.classList.add('error');
+                indicator.textContent = '❌ Failed to save code';
+            }
+            
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        function cleanExpiredStorage() {
+            codeStorage.cleanup();
+        }
+
+        const languageTemplates = {
+            javascript: `// Welcome to JavaScript playground!
+console.log('Hello, World!');
+
+// Try some modern JavaScript features
+const greet = (name) => {
+    return \`Hello, \${name}! Welcome to Monaco Editor.\`;
+};
+
+console.log(greet('Developer'));
+
+// Async/await example
+async function fetchData() {
+    try {
+        // Simulated API call
+        return new Promise(resolve => {
+            setTimeout(() => resolve('Data loaded!'), 1000);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}`,
+            html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monaco HTML Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .highlight {
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to <span class="highlight">Monaco Editor</span></h1>
+        <p>Start building your HTML here with full syntax highlighting!</p>
+        
+        <form>
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" placeholder="Enter your name">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>`,
+            css: `/* Welcome to CSS playground! */
+
+/* Modern CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 35px 60px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}`,
+            python: `# Welcome to Python playground!
+print("Hello, World!")
+
+# Python basics
+def greet(name):
+    """Greet someone with a personalized message."""
+    return f"Hello, {name}! Welcome to Monaco Editor."
+
+# List comprehension example
+numbers = [1, 2, 3, 4, 5]
+squares = [x**2 for x in numbers]
+print(f"Squares: {squares}")
+
+# Class example
+class Calculator:
+    def __init__(self):
+        self.history = []
+    
+    def add(self, a, b):
+        result = a + b
+        self.history.append(f"{a} + {b} = {result}")
+        return result
+    
+    def get_history(self):
+        return self.history
+
+# Usage
+calc = Calculator()
+result = calc.add(10, 5)
+print(f"Result: {result}")
+print(f"History: {calc.get_history()}")
+
+# Modern Python features
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class Person:
+    name: str
+    age: int
+    skills: List[str]
+
+# Create a person
+developer = Person("Monaco User", 25, ["Python", "JavaScript", "HTML"])
+print(f"Developer: {developer}")`,
+            liquid: `{% comment %} Welcome to Liquid playground! {% endcomment %}
+
+<h1>Hello, {{ 'World' | upcase }}!</h1>
+
+{% assign name = 'Monaco Editor User' %}
+<p>Welcome, {{ name }}!</p>
+
+{% comment %} Working with arrays {% endcomment %}
+{% assign languages = 'JavaScript,HTML,CSS,Python,Java,PHP,JSON' | split: ',' %}
+
+<h2>Supported Languages:</h2>
+<ul>
+{% for language in languages %}
+    <li>{{ language | strip }}</li>
+{% endfor %}
+</ul>
+
+{% comment %} Conditional logic {% endcomment %}
+{% assign current_hour = 'now' | date: '%H' | plus: 0 %}
+
+{% if current_hour < 12 %}
+    <p>Good morning! Time to code.</p>
+{% elsif current_hour < 18 %}
+    <p>Good afternoon! Keep coding.</p>
+{% else %}
+    <p>Good evening! Late night coding session?</p>
+{% endif %}
+
+{% comment %} Working with objects {% endcomment %}
+{% assign user = '{"name": "Developer", "level": "Expert", "favorite_language": "Liquid"}' | parse_json %}
+
+<div class="user-info">
+    <h3>User Profile</h3>
+    <p>Name: {{ user.name }}</p>
+    <p>Level: {{ user.level }}</p>
+    <p>Favorite Language: {{ user.favorite_language }}</p>
+</div>
+
+{% comment %} String filters {% endcomment %}
+{% assign welcome_message = 'welcome to monaco editor' %}
+<p>{{ welcome_message | capitalize | replace: 'monaco', 'Monaco' }}</p>`,
+            java: `// Welcome to Java playground!
+public class MonacoPlayground {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+        
+        // Create a greeting
+        Greeter greeter = new Greeter("Monaco Editor User");
+        System.out.println(greeter.greet());
+        
+        // Working with collections
+        java.util.List<String> languages = java.util.Arrays.asList(
+            "JavaScript", "HTML", "CSS", "Python", "Liquid", "Java", "PHP", "JSON"
+        );
+        
+        System.out.println("Supported languages:");
+        languages.forEach(lang -> System.out.println("- " + lang));
+        
+        // Modern Java features (Java 8+)
+        languages.stream()
+                .filter(lang -> lang.length() > 4)
+                .map(String::toUpperCase)
+                .forEach(System.out::println);
+    }
+}
+
+class Greeter {
+    private String name;
+    
+    public Greeter(String name) {
+        this.name = name;
+    }
+    
+    public String greet() {
+        return "Hello, " + name + "! Welcome to Monaco Editor Java playground.";
+    }
+    
+    // Getter and setter
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// Interface example
+interface Calculable {
+    double calculate(double a, double b);
+}
+
+// Lambda expression example
+class Calculator {
+    public static void demonstrateLambdas() {
+        Calculable add = (a, b) -> a + b;
+        Calculable multiply = (a, b) -> a * b;
+        
+        System.out.println("Addition: " + add.calculate(10, 5));
+        System.out.println("Multiplication: " + multiply.calculate(10, 5));
+    }
+}`,
+            php: `<?php
+// Welcome to PHP playground!
+
+echo "Hello, World!\\n";
+
+// Variables and strings
+$name = "Monaco Editor User";
+$greeting = "Hello, {$name}! Welcome to PHP playground.";
+echo $greeting . "\\n";
+
+// Arrays
+$languages = ['JavaScript', 'HTML', 'CSS', 'Python', 'Liquid', 'Java', 'PHP', 'JSON'];
+
+echo "Supported languages:\\n";
+foreach ($languages as $index => $language) {
+    echo ($index + 1) . ". {$language}\\n";
+}
+
+// Functions
+function calculateSum(array $numbers): int {
+    return array_sum($numbers);
+}
+
+function greetUser(string $name, string $role = 'Developer'): string {
+    return "Hello, {$name}! You are a {$role}.";
+}
+
+// Usage
+$numbers = [1, 2, 3, 4, 5];
+$sum = calculateSum($numbers);
+echo "Sum of numbers: {$sum}\\n";
+
+echo greetUser("Monaco User", "Full Stack Developer") . "\\n";
+
+// Classes and OOP
+class CodeEditor {
+    private string $name;
+    private array $supportedLanguages;
+    
+    public function __construct(string $name, array $languages) {
+        $this->name = $name;
+        $this->supportedLanguages = $languages;
+    }
+    
+    public function getName(): string {
+        return $this->name;
+    }
+    
+    public function getSupportedLanguages(): array {
+        return $this->supportedLanguages;
+    }
+    
+    public function addLanguage(string $language): void {
+        if (!in_array($language, $this->supportedLanguages)) {
+            $this->supportedLanguages[] = $language;
+        }
+    }
+    
+    public function displayInfo(): void {
+        echo "Editor: {$this->name}\\n";
+        echo "Supported Languages: " . implode(', ', $this->supportedLanguages) . "\\n";
+    }
+}
+
+// Create an editor instance
+$editor = new CodeEditor('Monaco Editor', $languages);
+$editor->displayInfo();
+
+// Modern PHP features
+$filteredLanguages = array_filter($languages, function($lang) {
+    return strlen($lang) > 4;
+});
+
+echo "Languages with more than 4 characters: " . implode(', ', $filteredLanguages) . "\\n";
+
+?>`,
+            json: `{
+  "welcome": "Welcome to JSON playground!",
+  "editor": {
+    "name": "Monaco Editor",
+    "version": "0.44.0",
+    "features": [
+      "Syntax highlighting",
+      "IntelliSense",
+      "Error detection",
+      "Auto-completion",
+      "Code folding"
+    ]
+  },
+  "supportedLanguages": [
+    {
+      "name": "JavaScript",
+      "extension": ".js",
+      "type": "programming"
+    },
+    {
+      "name": "HTML",
+      "extension": ".html",
+      "type": "markup"
+    },
+    {
+      "name": "CSS", 
+      "extension": ".css",
+      "type": "stylesheet"
+    },
+    {
+      "name": "Python",
+      "extension": ".py", 
+      "type": "programming"
+    },
+    {
+      "name": "Liquid",
+      "extension": ".liquid",
+      "type": "template"
+    },
+    {
+      "name": "Java",
+      "extension": ".java",
+      "type": "programming"
+    },
+    {
+      "name": "PHP",
+      "extension": ".php",
+      "type": "programming"
+    },
+    {
+      "name": "JSON",
+      "extension": ".json",
+      "type": "data"
+    }
+  ],
+  "userProfile": {
+    "role": "Developer",
+    "experience": "Expert",
+    "preferences": {
+      "theme": "vs-dark",
+      "fontSize": 14,
+      "wordWrap": "on",
+      "minimap": {
+        "enabled": true
+      }
+    }
+  },
+  "tips": [
+    "Use Ctrl+Space for auto-completion",
+    "Press F1 for command palette",
+    "Ctrl+/ for line comments",
+    "Alt+Shift+F for format document"
+  ],
+  "metadata": {
+    "created": "2024",
+    "lastModified": "2024-07-24",
+    "author": "Monaco Playground",
+    "isValid": true
+  }
+}`
+        };
+
+        function initializeApp() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const editorContainer = document.getElementById('editorContainer');
+            const languageSelector = document.querySelector('.language-selector');
+            const languageSelect = document.getElementById('languageSelect');
+            const currentLanguageSpan = document.getElementById('currentLanguage');
+            const clearBtn = document.getElementById('clearBtn');
+            const loadBtn = document.getElementById('loadBtn');
+            const newLanguageBtn = document.getElementById('newLanguageBtn');
+            const loading = document.getElementById('loading');
+
+            // Clean expired storage on app start
+            cleanExpiredStorage();
+
+            // Language card click handlers
+            document.querySelectorAll('.language-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const language = card.dataset.language;
+                    startEditor(language);
+                });
+            });
+
+            // Dropdown change handler
+            languageSelect.addEventListener('change', (e) => {
+                changeLanguage(e.target.value);
+            });
+
+            // Button handlers
+            clearBtn.addEventListener('click', () => {
+                if (editor) {
+                    editor.setValue(languageTemplates[currentLanguage] || '');
+                }
+            });
+
+            loadBtn.addEventListener('click', () => {
+                if (currentLanguage) {
+                    const savedCode = loadCodeFromStorage(currentLanguage);
+                    if (savedCode && editor) {
+                        editor.setValue(savedCode.code);
+                        const savedDate = new Date(savedCode.timestamp).toLocaleString();
+                        showSaveIndicator(true, `📂 Code loaded from ${savedDate}`);
+                        document.getElementById('editorStatus').textContent = 'Loaded from save';
+                    } else {
+                        showSaveIndicator(false, '❌ No saved code found');
+                    }
+                }
+            });
+
+            newLanguageBtn.addEventListener('click', () => {
+                showWelcomeScreen();
+            });
+
+            function startEditor(language) {
+                currentLanguage = language;
+                welcomeScreen.style.display = 'none';
+                editorContainer.style.display = 'none';
+                languageSelector.style.display = 'flex';
+                loading.style.display = 'flex';
+                
+                languageSelect.value = language;
+                currentLanguageSpan.textContent = language.charAt(0).toUpperCase() + language.slice(1);
+
+                require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+                require(['vs/editor/editor.main'], function () {
+                    loading.style.display = 'none';
+                    editorContainer.style.display = 'flex';
+                    
+                    if (editor) {
+                        editor.dispose();
+                    }
+
+                    // Check for saved code first
+                    const savedCode = loadCodeFromStorage(language);
+                    const initialValue = savedCode ? savedCode.code : (languageTemplates[language] || '');
+
+                    editor = monaco.editor.create(document.getElementById('editor'), {
+                        value: initialValue,
+                        language: language,
+                        theme: 'vs-dark',
+                        fontSize: 14,
+                        lineNumbers: 'on',
+                        roundedSelection: false,
+                        scrollBeyondLastLine: false,
+                        readOnly: false,
+                        automaticLayout: true,
+                        minimap: { enabled: true },
+                        wordWrap: 'on',
+                        folding: true,
+                        renderLineHighlight: 'all',
+                        contextmenu: true,
+                        mouseWheelZoom: true,
+                        smoothScrolling: true,
+                        cursorBlinking: 'blink',
+                        cursorSmoothCaretAnimation: true
+                    });
+
+                    // Add Ctrl+S save functionality
+                    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function() {
+                        const success = saveCodeToStorage();
+                        showSaveIndicator(success);
+                        return null; // Prevent default browser save dialog
+                    });
+
+                    // Add some editor event handlers
+                    editor.onDidChangeModelContent(() => {
+                        document.getElementById('editorStatus').textContent = 'Modified';
+                    });
+
+                    // Show message if loaded from saved code
+                    if (savedCode) {
+                        const savedDate = new Date(savedCode.timestamp).toLocaleString();
+                        setTimeout(() => {
+                            showSaveIndicator(true, `📂 Loaded saved code from ${savedDate}`);
+                        }, 500);
+                    }
+
+                    // Focus the editor
+                    editor.focus();
+                });
+            }
+
+            function changeLanguage(language) {
+                if (editor && currentLanguage !== language) {
+                    currentLanguage = language;
+                    currentLanguageSpan.textContent = language.charAt(0).toUpperCase() + language.slice(1);
+                    
+                    monaco.editor.setModelLanguage(editor.getModel(), language);
+                    
+                    // Check for saved code or use template
+                    const savedCode = loadCodeFromStorage(language);
+                    const codeToLoad = savedCode ? savedCode.code : (languageTemplates[language] || '');
+                    
+                    editor.setValue(codeToLoad);
+                    
+                    document.getElementById('editorStatus').textContent = 'Language changed';
+                    
+                    if (savedCode) {
+                        const savedDate = new Date(savedCode.timestamp).toLocaleString();
+                        setTimeout(() => {
+                            showSaveIndicator(true, `📂 Loaded saved ${language} code from ${savedDate}`);
+                        }, 500);
+                    }
+                }
+            }
+
+            function showWelcomeScreen() {
+                welcomeScreen.style.display = 'flex';
+                editorContainer.style.display = 'none';
+                languageSelector.style.display = 'none';
+                
+                if (editor) {
+                    editor.dispose();
+                    editor = null;
+                }
+            }
+        }
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>

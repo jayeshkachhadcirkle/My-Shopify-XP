@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Data to Google Sheets</title>
+    <!--
+      Loads Tailwind CSS for easy styling.
+      All styling is done with Tailwind classes to ensure a clean, modern look.
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen flex  justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center text-slate-800 mb-2">Send Data to Sheet</h1>
+        <p class="text-center text-slate-500 mb-6">Enter your information below to add a new row to the Google Sheet.
+        </p>
+
+        <form id="dataForm" class="space-y-4">
+            
+            <div>
+                <label for="name" class="block text-sm font-medium text-slate-700">Name</label>
+                <input type="text" id="name" name="name" required
+                    class="mt-1 block w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+                <input type="email" id="email" name="email" required
+                    class="mt-1 block w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium text-slate-700">Phone</label>
+                <input type="phone" id="phone" name="phone" required
+                    class="mt-1 block w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            </div>
+            <div>
+                <label for="message" class="block text-sm font-medium text-slate-700">Message</label>
+                <input type="message" id="message" name="message" required
+                    class="mt-1 block w-full px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            </div>
+
+            <button type="submit" id="submitButton"
+                class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                Submit
+            </button>
+        </form>
+
+        <div id="statusMessage" class="mt-4 text-center text-sm font-medium hidden"></div>
+    </div>
+
+    <script>
+        // Define your Google Apps Script URL here.
+        // Replace 'YOUR_APPS_SCRIPT_URL_HERE' with the actual URL after deployment.
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVSdgTasRr5lRxptLv0gJeD3RUoip7g_YbvcyFRoW2678aT_Ox3SkZkJ9sroOz9ydR/exec';
+
+        // Get DOM elements
+        const form = document.getElementById('dataForm');
+        const submitButton = document.getElementById('submitButton');
+        const statusMessage = document.getElementById('statusMessage');
+
+        /**
+         * Shows a status message to the user.
+         * @param {string} message - The message to display.
+         * @param {string} type - The type of message ('success' or 'error').
+         */
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
+            if (type === 'success') {
+                statusMessage.classList.add('text-green-600');
+            } else {
+                statusMessage.classList.add('text-red-600');
+            }
+        }
+
+        // Add a listener for the form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Disable the button and clear the status message
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            statusMessage.classList.add('hidden');
+
+            // Create a FormData object from the form
+            const formData = new FormData(form);
+            // Convert FormData to a plain object
+            const data = Object.fromEntries(formData.entries());
+
+            // Use a try/catch block for robust error handling
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    // The 'Content-Type' header is not strictly required here if using FormData,
+                    // but it's good practice for JSON payloads. The Apps Script side will
+                    // handle the incoming data based on its content type.
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    // Send the data as a JSON string
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        showStatus('Data successfully added to the sheet!', 'success');
+                        form.reset(); // Clear the form fields
+                    } else {
+                        showStatus(`Error: ${result.error}`, 'error');
+                    }
+                } else {
+                    // Handle HTTP errors
+                    showStatus(`Error: Server responded with status ${response.status}`, 'error');
+                }
+            } catch (error) {
+                // Handle network or other unexpected errors
+                console.error('Submission failed:', error);
+                showStatus('An unexpected error occurred. Please try again.', 'error');
+            } finally {
+                // Re-enable the button and reset its text
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit';
+            }
+        });
+
+    </script>
+</body>
+
+</html>

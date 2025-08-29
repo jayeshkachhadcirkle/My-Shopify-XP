@@ -1,0 +1,66 @@
+{% comment %}
+  need arguments =
+    limit,
+    recommendation_title,
+{% endcomment %}
+
+<div
+  class="product-recommendations"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}&intent=related"
+>
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <div class="section-title flex align-center">
+      <h2>{{ recommendation_title }}</h2>
+    </div>
+    {% assign r_total = 0 %}
+    <div class="product-row flex">
+      {% for product in recommendations.products %}
+        {% render 'product', product: product %}
+        {% assign p = product.price | money_without_currency %}
+        {% assign r_total = r_total | plus: p %}
+      {% endfor %}
+    </div>
+    <div class="pt-30 text-center">
+      <a href="#" class="btn-primary">BUY ALL NOW @ {{ r_total }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% javascript %}
+  const handleIntersection = (entries, observer) => {
+    if (!entries[0].isIntersecting) return;
+
+    observer.unobserve(productRecommendationsSection);
+
+    const url = productRecommendationsSection.dataset.url;
+
+
+    fetch(url)
+      .then(response => response.text())
+      .then(text => {
+        // console.log(text);
+        const html = document.createElement('div');
+        html.innerHTML = text;
+        const recommendations = html.querySelector('.product-recommendations');
+        if (recommendations && recommendations.innerHTML.trim().length) {
+          productRecommendationsSection.innerHTML = recommendations.innerHTML;
+        }
+      })
+      .catch(e => {
+        console.error(e);
+      });
+
+
+    
+    fetch(url).then(res => res.json()).then(data => { console.log(data) });
+
+
+
+    
+  };
+
+  const productRecommendationsSection = document.querySelector('.product-recommendations');
+  const observer = new IntersectionObserver(handleIntersection, {rootMargin: '0px 0px 0px 0px'});
+
+  observer.observe(productRecommendationsSection);
+{% endjavascript %}

@@ -1,0 +1,123 @@
+// let timer;
+// const searchInput = document.querySelector('.search__input')
+// searchInput.addEventListener('input', function(event) {
+//   if(event.target.value.length > 0){
+//   let searchPopup = document.getElementsByClassName('mini-search')[0].style.display = 'block';
+//   clearTimeout(timer);
+//   let placerSrc = "https://cdn.shopify.com/s/files/1/0697/6975/6810/files/placer.svg?v=1747889981";
+//   let limit = parseInt(document.getElementById('limiter').getAttribute('limit'))
+//   let limit_scope = document.getElementById('limiter').getAttribute('scope')
+//     let url = window.Shopify.routes.root + "search/suggest.json?q=" + event.target.value + "&resources[limit]=" + limit + "&resources[limit_scope]=" + limit_scope
+//     // console.log(url)
+//   timer = setTimeout(function(){
+//     // console.log('changed:', event.target.value);
+//     fetch(url)
+//     .then((response) => response.json())
+//     .then((suggestions) => {
+//         let products = suggestions.resources.results.products;
+//         let pages = suggestions.resources.results.pages;
+//         let articles = suggestions.resources.results.articles;
+//         let collections = suggestions.resources.results.collections;
+//         console.log(suggestions.resources.results)
+
+//         let sPro = document.getElementsByClassName('products-s')[0]
+//         if (products.length > 0) {
+//           // let limit = parseInt(sPro.getAttribute('limit'))
+//           // console.log(limit)
+//             sPro.innerHTML = "<h4>Products</h4>"
+//             for (let i = 0; i < products.length; i++) {
+//                 let p = products[i]
+//                 let tPro = document.createElement('a');
+//                 tPro.setAttribute('href', p['url'])
+//                 tPro.classList.add('tiles');
+//                 let image;
+//                 if (p['image']) {
+//                     image = p['image']
+//                 } else {
+//                     image = placerSrc
+//                 }
+//                 tPro.innerHTML = `
+//                        <img src="${image}" width="50px" height= "50px" >
+//                        <h5>${p['title']}</h5>
+//                    `;
+//                 sPro.appendChild(tPro)
+//             }
+//         } else {
+//             sPro.innerHTML = ""
+//         }
+
+//         let sCollections = document.getElementsByClassName('collections-s')[0]
+//         if (collections.length > 0) {
+//             // console.log(sCollections)
+//             sCollections.innerHTML = "<h4>Collections</h4>"
+//             for (let i = 0; i < collections.length; i++) {
+//                 let c = collections[i]
+//                 let tCol = document.createElement('a');
+//                 tCol.setAttribute('href', c['url'])
+//                 tCol.classList.add('tiles');
+//                 let image;
+//                 if (c['featured_image']['url']) {
+//                     image = c['featured_image']['url']
+//                 } else {
+//                     image = placerSrc
+//                 }
+//                 tCol.innerHTML = `
+//                        <img src="${image}" width="50px" height= "50px" >
+//                        <h5>${c['title']}</h5>
+//                    `;
+//                 sCollections.appendChild(tCol)
+//             }
+//         } else {
+//             sCollections.innerHTML = "";
+//         }
+
+//         let sPages = document.getElementsByClassName('pages-s')[0]
+//         if (pages.length > 0) {
+//             // console.log(sPages)
+//             sPages.innerHTML = "<h4>Pages</h4>"
+//             for (let i = 0; i < pages.length; i++) {
+//                 let page = pages[i]
+//                 let tPage = document.createElement('a');
+//                 tPage.setAttribute('href', page['url'])
+//                 tPage.classList.add('tiles');
+//                 tPage.style.flexDirection = 'column';
+//                 tPage.innerHTML = `
+//                          <h5>${page['title']}</h5>
+//                          <p>Published @ ${page['published_at']}</p>
+//                      `;
+//                 sPages.appendChild(tPage)
+//             }
+//         } else {
+//             sPages.innerHTML = "";
+//         }
+      
+//         let sArticles = document.getElementsByClassName('article-s')[0]
+//         if (articles.length > 0) {
+//             // console.log(sArticles)
+//             sArticles.innerHTML = "<h4>Articles</h4>"
+//             for (let i = 0; i < articles.length; i++) {
+//                 let article = articles[i]
+//                 let tPage = document.createElement('a');
+//                 tPage.setAttribute('href', article['url'])
+//                 tPage.classList.add('tiles');
+//                 tPage.style.flexDirection = 'column';
+//                 tPage.innerHTML = `
+//                        <h5>${article['title']}</h5>
+//                        <p>Published @ ${article['published_at']}</p>
+//                    `;
+//                 sArticles.appendChild(tPage)
+//             }
+//         } else {
+//             sArticles.innerHTML = "";
+//         }
+
+//     }
+//     );
+//   }, 700)
+//   }else{
+//     let searchPopup = document.getElementsByClassName('mini-search')[0].style.display = 'none';
+//   }
+// });
+// searchInput.addEventListener('blur', function(){
+//   document.getElementsByClassName('mini-search')[0].style.display = 'none';
+// })

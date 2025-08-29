@@ -1,0 +1,289 @@
+<section class="cart-page-wrapper">
+  {%- assign product_form_id = 'product-form-' | append: section.id -%}
+  <div class="container">
+    <div class="cart-heading text-center pt-70 pb-70">
+      <h2>Your Shopping Cart</h2>
+    </div>
+    {% if cart != empty %}
+      <div class="cart-tabl-section flex">
+        <div class="cart-table-lft">
+          <div class="cart-table-layout">
+            <div class="cart-table-head flex">
+              <div class="cart-head">Shopping Cart</div>
+              <button id="update_cart" form="cart" style="display:none;">Submit</button>
+            </div>
+
+            <form action="{{ routes.cart_url }}" class="" method="post" id="cart">
+              <div class="cart-tabl-body" id="cartbody">
+                
+              </div>
+            </form>
+          </div>
+          <a
+            href="{% if section.settings.continue_btn != blank %}{{ section.settings.continue_btn }} {% else %} {{ routes.all_products_collection_url }}{% endif %} "
+            class="link-btn align-center"
+          >
+            Continue Shopping
+            {% render 'icons', icon_type: 'right_arrow32' %}
+          </a>
+        </div>
+        <div class="cart-table-right">
+          <div class="order-summery">
+            <div class="order-title">{{ 'cart.general.summary' | t }}</div>
+            <ul class="order-details">
+              <li>
+                <div class="od-lbl" id="cart-items">{{ cart.item_count }} items</div>
+                <div class="od-lbl bold cart-prices">
+                  <p id="cart-subtotal">{{ cart.total_price | money }}</p>
+                </div>
+              </li>
+              <li>
+                <div class="od-lbl">{{ 'cart.general.shipping' | t }}</div>
+                <div class="od-lbl bold cart-prices">Free</div>
+              </li>
+              <li>
+                <div class="od-lbl">{{ 'cart.general.tax1' | t }}</div>
+                <div class="od-lbl bold cart-prices">
+                  <p id="total-price">{{ cart.total_price | money }}</p>
+                </div>
+              </li>
+              <li>
+                <div class="od-lbl">{{ 'cart.general.tax2' | t }}</div>
+                <div class="od-lbl bold cart-prices">
+                  <p id="original-total">{{ cart.original_total_price | money }}</p>
+                </div>
+              </li>
+              <li>
+                <div class="od-lbl">{{ 'cart.general.tax' | t }}</div>
+                {% assign tax_amt = cart.original_total_price | minus: cart.items_subtotal_price %}
+                <div class="od-lbl bold cart-prices">
+                  <p id="cart-tax">{{ tax_amt | money }}</p>
+                </div>
+              </li>
+            </ul>
+            <div class="order-footer text-center">
+              <p>{{- 'cart.general.note' | t -}}</p>
+              <button class="btn checkout-btn" name="checkout" form="cart">{{ 'cart.general.checkout' | t }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="cart-heading text-center pt-70 pb-70">
+        <div class="mini_cart_body_inner">
+          <div class="empty_cart">
+            <h2>{{ 'cart.general.empty_note' | t }}</h2>
+            <a href="{% if section.settings.continue_btn != blank %}{{ section.settings.continue_btn }} {% else %} {{ routes.all_products_collection_url }}{% endif %} ">
+              <button class="btn-primary">{{ 'cart.general.continue_shopping' | t }}</button>
+            </a>
+            <p>
+              Have an Account !
+              <a style="color: var(--red);" href="{{ routes.account_login_url }}">{{ 'cart.general.login' | t }}</a>
+            </p>
+            <p>or</p>
+            <p>
+              Create an Account !
+              <a style="color: var(--red);" href="{{ routes.account_register_url }}">{{ 'cart.general.signup' | t }}</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Section name",
+  "settings": [
+    {
+      "type": "url",
+      "id": "continue_btn",
+      "label": "Continue TO"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+  const update_cart = document.getElementById('update_cart');
+  const cartbody = document.getElementById('cartbody');
+
+  update_cart.addEventListener('click', function () {
+    console.log('Clickedf');
+  });
+
+  const url = '/cart.js';
+  let cart_data;
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      cart_data = data;
+      console.log(cart_data);
+
+      cart_data['items'].forEach(function (i) {
+        let image = i['image'];
+        let name = i['title'];
+        let qty = i['quantity'];
+        let price = i['price'] / 100;
+        price = price.toFixed(2);
+        let i_url = i['url'];
+        let v_id = i['variant_id'];
+        let lkey = i['key'];
+        let currency = data['currency'];
+
+        let itemDiv = document.createElement('div');
+        itemDiv.classList.add('cart-tble-row');
+        itemDiv.classList.add('flex');
+        itemDiv.innerHTML = `
+                <div class="cart-col-left flex">
+                <div class="cart-col-img">
+                    <a href="${i_url}" class="cart-img">
+                        <img src="${image}" >
+                    </a>
+                </div>
+                <div class="cart-pro-detail">
+                    <div class="cart-pro-inner">
+                        <div class="cart-title">
+                            <a href="${i_url}">${name}</a>
+                        </div>
+                        <div class="price flex">
+                            <ins>${currency} ${price}</ins>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-col-right flex">
+                <div class="cart-qntty-col">
+                    <div class="qtyAdjust">
+                        <input
+                            class="tc item-quantity get-qty"
+                            data-quantity-variant-id="${v_id}"
+                            type="number"
+                            name="updates[]"
+                            var="${v_id}"
+                            value="${qty}"
+                            lkey = "${lkey}"
+                                  >
+                        <span class="adjust minus" name="minus" type="button">
+                              <svg
+                                  width="15"
+                                  height="2"
+                                  viewBox="0 0 15 2"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M15 0H0V1.17188H15V0Z" fill="white"></path>
+                                </svg>
+                        </span>
+                        <span class="adjust plus" name="plus" type="button">
+                            <svg
+                              width="15"
+                              height="15"
+                              viewBox="0 0 15 15"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                  d="M8.08594 6.91406V0H6.91406V6.91406H0V8.08594H6.91406V15H8.08594V8.08594H15V6.91406H8.08594Z"
+                                  fill="white"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="cart-price-col">
+                    <div class="remove-btn">
+                        <a href="{{ item.url_to_remove }}"> <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                          >
+                            <path d="M12.7584 7.24603C12.4997 7.24603 12.29 7.45571 12.29 7.71442V16.5669C12.29 16.8254 12.4997 17.0353 12.7584 17.0353C13.0171 17.0353 13.2268 16.8254 13.2268 16.5669V7.71442C13.2268 7.45571 13.0171 7.24603 12.7584 7.24603Z" fill="#DD3834"></path>
+                            <path d="M7.23206 7.24603C6.97335 7.24603 6.76367 7.45571 6.76367 7.71442V16.5669C6.76367 16.8254 6.97335 17.0353 7.23206 17.0353C7.49077 17.0353 7.70044 16.8254 7.70044 16.5669V7.71442C7.70044 7.45571 7.49077 7.24603 7.23206 7.24603Z" fill="#DD3834"></path>
+                            <path d="M3.20333 5.95413V17.4941C3.20333 18.1762 3.45344 18.8167 3.89035 19.2763C4.32525 19.7372 4.93049 19.9988 5.56391 19.9999H14.4259C15.0594 19.9988 15.6647 19.7372 16.0994 19.2763C16.5363 18.8167 16.7864 18.1762 16.7864 17.4941V5.95413C17.6549 5.7236 18.2177 4.88454 18.1016 3.99333C17.9852 3.1023 17.2261 2.43577 16.3274 2.43559H13.9293V1.85011C13.932 1.35776 13.7374 0.884988 13.3888 0.537177C13.0403 0.189549 12.5668 -0.00402466 12.0744 5.06487e-07H7.91533C7.42298 -0.00402466 6.94948 0.189549 6.60093 0.537177C6.25239 0.884988 6.05772 1.35776 6.06046 1.85011V2.43559H3.66238C2.76367 2.43577 2.00456 3.1023 1.8882 3.99333C1.77202 4.88454 2.33481 5.7236 3.20333 5.95413ZM14.4259 19.0632H5.56391C4.76308 19.0632 4.14009 18.3752 4.14009 17.4941V5.9953H15.8497V17.4941C15.8497 18.3752 15.2267 19.0632 14.4259 19.0632ZM6.99723 1.85011C6.99412 1.60622 7.08999 1.37148 7.26307 1.19932C7.43597 1.02715 7.67126 0.932558 7.91533 0.936766H12.0744C12.3185 0.932558 12.5538 1.02715 12.7267 1.19932C12.8998 1.3713 12.9956 1.60622 12.9925 1.85011V2.43559H6.99723V1.85011ZM3.66238 3.37236H16.3274C16.793 3.37236 17.1705 3.74981 17.1705 4.21544C17.1705 4.68108 16.793 5.05853 16.3274 5.05853H3.66238C3.19674 5.05853 2.81929 4.68108 2.81929 4.21544C2.81929 3.74981 3.19674 3.37236 3.66238 3.37236Z" fill="#DD3834"></path>
+                            <path d="M9.99572 7.24603C9.73702 7.24603 9.52734 7.45571 9.52734 7.71442V16.5669C9.52734 16.8254 9.73702 17.0353 9.99572 17.0353C10.2544 17.0353 10.4641 16.8254 10.4641 16.5669V7.71442C10.4641 7.45571 10.2544 7.24603 9.99572 7.24603Z" fill="#DD3834"></path>
+                          </svg> </a>
+                    </div>
+                </div>
+            </div>
+            `;
+
+        cartbody.appendChild(itemDiv);
+      });
+
+      let allPlus = document.querySelectorAll('.plus');
+      allPlus.forEach(function (plus) {
+        plus.addEventListener('click', function () {
+          let currentQty = plus.parentElement.getElementsByTagName('input')[0].value;
+          currentQty++;
+          plus.parentElement.getElementsByTagName('input')[0].value = currentQty;
+          updateQtyLive();
+        });
+      });
+
+      let allMinus = document.querySelectorAll('.minus');
+      allMinus.forEach(function (minus) {
+        minus.addEventListener('click', function () {
+          let currentQty = minus.parentElement.getElementsByTagName('input')[0].value;
+          currentQty--;
+          currentQty = currentQty < 1 ? 1 : currentQty;
+          minus.parentElement.getElementsByTagName('input')[0].value = currentQty;
+          updateQtyLive();
+        });
+      });
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+
+  function updateQtyLive() {
+    let justQty = [];
+    let allQty = document.querySelectorAll('.get-qty');
+    allQty.forEach(function (q) {
+      let newQty = q.value;
+      justQty.push(newQty * 1);
+    });
+    console.log(justQty);
+    fetch(window.Shopify.routes.root + 'cart/update.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ updates: justQty }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        // updating values
+        document.getElementById('cart-count').innerText = data['item_count'];
+        document.getElementById('cart-items').innerText = data['item_count'] + ' Items';
+
+        let locale = window.Shopify.locale + '-' + window.Shopify.country;
+        let subtotal = data['items_subtotal_price'] / 100;
+        subtotal = subtotal.toLocaleString(locale, { style: 'currency', currency: data['currency'] });
+        document.getElementById('cart-subtotal').innerText = subtotal;
+
+        let totalprice = data['total_price'] / 100;
+        totalprice = totalprice.toLocaleString(locale, { style: 'currency', currency: data['currency'] });
+        document.getElementById('total-price').innerText = totalprice;
+
+        let originalPrice = data['original_total_price'] / 100;
+        originalPrice = originalPrice.toLocaleString(locale, { style: 'currency', currency: data['currency'] });
+        document.getElementById('original-total').innerText = originalPrice;
+      });
+  }
+
+  // function isValidJSON(jsonString) {
+  //   try {
+  //     JSON.parse(jsonString);
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+{% endjavascript %}

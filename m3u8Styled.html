@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Video Player</title>
+    <!-- Include Video.js CSS -->
+    <!-- <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet"> -->
+    <style>
+        /* Center the video player on the page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-js {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Light mode styles for video.js controls */
+        .vjs-control-bar {
+            background-color: #ffffff !important;
+            border-top: 1px solid #ddd !important;
+        }
+
+        .vjs-play-control,
+        .vjs-volume-panel,
+        .vjs-fullscreen-control,
+        .vjs-progress-control {
+            color: #333 !important;
+        }
+
+        .vjs-slider {
+            background-color: #e0e0e0 !important;
+        }
+
+        .vjs-slider-bar {
+            background-color: #007bff !important;
+        }
+
+        .vjs-button:hover {
+            color: #007bff !important;
+        }
+
+        /* Remove play button border */
+        .vjs-play-control {
+            border: none !important;
+        }
+
+        .vjs-big-play-button {
+            border: none !important;
+            border-radius: 0.5em !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <h1>HTML Video Player</h1> -->
+    <!-- Video.js Player -->
+    <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" width="300" height="500"
+        data-setup='{}'>
+        <source
+            src="//jayesh-cirkle.myshopify.com/cdn/shop/videos/c/vp/9fae7b8cd72347b485f16117bc51781b/9fae7b8cd72347b485f16117bc51781b.SD-480p-0.9Mbps-46283944.mp4?v=0"
+            type="video/mp4">
+        <source
+            src="//jayesh-cirkle.myshopify.com/cdn/shop/videos/c/vp/e167d7e13c9046fd9a0a8fbfb3b6f891/e167d7e13c9046fd9a0a8fbfb3b6f891.m3u8?v=0"
+            type="application/x-mpegURL">
+        <!-- Fallback text -->
+        Your browser does not support the video tag.
+    </video>
+    <div class="video-container">
+    </div>
+
+    <!-- Include Video.js JavaScript -->
+    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+</body>
+
+</html>

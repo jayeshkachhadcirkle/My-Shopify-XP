@@ -1,0 +1,179 @@
+{
+    "name": "Footer",
+    "blocks": [
+        {
+            "name": "Anchor Heading",
+            "type": "aHeading",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "anchorHeading",
+                    "label": "Heading",
+                    "default": "Heading"
+                }
+            ]
+        },
+        {
+            "name": "Anchor Link",
+            "type": "aLink",
+            "settings": [
+                {
+                    "type": "url",
+                    "id": "url-id",
+                    "label": "Link"
+                }
+            ]
+        },
+        {
+            "name": "Footer Blocks",
+            "type": "footer-block",
+            "limit": 4,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "block-heading",
+                    "label": "Block Heading",
+                    "default": "Heading"
+                },
+                {
+                    "type": "textarea",
+                    "id": "block-desc",
+                    "label": "Footer Left Text"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "socialcheck",
+                    "label": "Social icon",
+                    "default": false
+                },
+                {
+                    "type": "text",
+                    "id": "link1-title",
+                    "label": "Link 1 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link1",
+                    "label": "Link 1"
+                },
+                {
+                    "type": "text",
+                    "id": "link2-title",
+                    "label": "Link 2 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link2",
+                    "label": "Link 2"
+                },
+                {
+                    "type": "text",
+                    "id": "link3-title",
+                    "label": "Link 3 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link3",
+                    "label": "Link 3"
+                },
+                {
+                    "type": "text",
+                    "id": "link4-title",
+                    "label": "Link 4 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link4",
+                    "label": "Link 4"
+                },
+                {
+                    "type": "text",
+                    "id": "link5-title",
+                    "label": "Link 5 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link5",
+                    "label": "Link 5"
+                },
+                {
+                    "type": "text",
+                    "id": "link6-title",
+                    "label": "Link 6 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link6",
+                    "label": "Link 6"
+                },
+                {
+                    "type": "text",
+                    "id": "link7-title",
+                    "label": "Link 7 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link7",
+                    "label": "Link 7"
+                },
+                {
+                    "type": "text",
+                    "id": "link8-title",
+                    "label": "Link 8 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link8",
+                    "label": "Link 8"
+                },
+                {
+                    "type": "text",
+                    "id": "link9-title",
+                    "label": "Link 9 Title"
+                },
+                {
+                    "type": "url",
+                    "id": "block-link9",
+                    "label": "Link 9"
+                }
+            ]
+        }
+    ],
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "pay1",
+            "label": "Pay Option 1"
+        },
+        {
+            "type": "url",
+            "id": "pay1link",
+            "label": "Pay 1 Link"
+        },
+        {
+            "type": "image_picker",
+            "id": "pay2",
+            "label": "Pay Option 2"
+        },
+        {
+            "type": "url",
+            "id": "pay2link",
+            "label": "Pay 2 Link"
+        },
+        {
+            "type": "image_picker",
+            "id": "pay3",
+            "label": "Pay Option 3"
+        },
+        {
+            "type": "url",
+            "id": "pay3link",
+            "label": "Pay 3 Link"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Footer"
+        }
+    ]
+}

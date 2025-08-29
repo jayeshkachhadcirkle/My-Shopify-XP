@@ -1,0 +1,16 @@
+{% capture allmedia %}
+  [{% for i in product.media %}
+      { "type":"{{ i.media_type }}", "thumb": {% if i.media_type == 'image' %}"{{ i.src | image_url: width: 100, height: 150 }}"{% else %}"{{ i.preview_image.src }}"{% endif %}, "src":{% if i.media_type == 'image' %}"{{ i.src | image_url: width: 1000, height: 1000 }}"{% else %}  
+        {% for vid in i.sources %}
+        {% comment %}
+          { "format": "{{ vid.format }}", "height": {{ vid.height }}, "mime_type": "{{ vid.mime_type }}", "url": "{{ vid.url }}", "width": {{ vid.width }} }
+          {% if forloop.last %}
+            {% else %},
+          {% endif %}
+        {% endcomment %}
+      {% endfor %} {% endif %} }
+    {% if forloop.last %}
+      {% else %},
+    {% endif %}
+  {% endfor %}]
+{% endcapture %}
