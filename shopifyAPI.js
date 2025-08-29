@@ -1059,7 +1059,7 @@ fetch(`${window.Shopify.routes.root}admin/api/2024-07/customers/838784506 2794/m
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': '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'
+    'X-Shopify-Access-Token': 'app_token'
   },
   body: JSON.stringify(metafieldData)
 })
@@ -1080,7 +1080,7 @@ fetch(`${window.Shopify.routes.root}admin/api/2024-07/products/8542096982154/met
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': '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'
+    'X-Shopify-Access-Token': 'app_token'
   },
 })
   .then(response => response.json())
@@ -1187,7 +1187,7 @@ fetch(`https://admin.shopify.com/store/hemp-hash/products.json`)
     console.log(data)
   })
 
-  
+
 // just a test to fetch product details
 fetch(window.Shopify.routes.root + 'products/tropical-express-cbd-flower-indoor-14-cbd.js')
   .then(response => response.json())
