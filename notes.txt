@@ -100,3 +100,30 @@ document.getElementsByClassName('plus')[0].parentElement.getElementsByTagName('i
 
 ========================================================
 cart-table-lft
+
+
+
+w-full mx-auto my-auto swiper swiper_card
+
+
+klaviyo public innovacare
+Y9kHYT
+
+yello form
+RURQvM
+
+
+window._klOnsite = window._klOnsite || [];
+window._klOnsite.push(['openForm', 'UYEpe6']);
+
+window._klOnsite = window._klOnsite || [];
+window._klOnsite.push(['openForm', 'RURQvM']);
+
+
+https://static-tracking.klaviyo.com/onsite/js/static.5f280103f51ea7c7fff7.js?cb=2
+https://static.klaviyo.com/onsite/js/signup_forms.41f0ce244a6a10660c82.js?cb=2
+https://static.klaviyo.com/onsite/js/sharedUtils.c49bd83091715fabca73.js?cb=2
+https://static.klaviyo.com/onsite/js/runtime.70f445fa6fe60b1119d2.js?cb=2
+
+
+https://prnt.sc/p0dglk6rzZ9x

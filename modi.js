@@ -992,12 +992,3 @@ async function sendItemToCart(var_id, quantity, formElement, errDiv) {
 
 // ============================================ Con
 
-// create a laravel project for personal notes
-
-// like i can login
-// i can write personal notes
-// use vs web cause i need to take code notes
-// keep all things dark, minimal images and minimal colors
-// provide feature like can upload files which are linked to a note
-// files linked to any notes should be visible in all files page
-// provide search feature

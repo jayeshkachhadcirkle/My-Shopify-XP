@@ -1,0 +1,50 @@
+const currencies = [
+    {
+        "code": "AFN",
+        "name": "Afghan Afghani",
+        "symbol": "؋",
+        "rule": "Round up to the nearest 100.00 AFN",
+        "roundTo": 100,
+        "specified": 100,
+    },
+    {
+        "code": "AWG",
+        "name": "Aruban Florin",
+        "symbol": "AWG",
+        "rule": "Round up to the nearest 1.00 AWG",
+        "roundTo": 1,
+        "specified": 1,
+    },
+    {
+        "code": "KHR",
+        "name": "Cambodian Riel",
+        "symbol": "៛",
+        "rule": "Round up to the nearest 1,000.00 KHR",
+        "roundTo": 1000,
+        "specified": 100,
+    },
+    {
+        "code": "COP",
+        "name": "Colombian Peso",
+        "symbol": "$",
+        "rule": "Round up to the nearest 1,000.00 COP",
+        "roundTo": 1000,
+        "specified": 1000,
+    },
+    {
+        "code": "INR",
+        "name": "Indian Rupee",
+        "symbol": "INR",
+        "rule": "Round up to the nearest 100 INR",
+        "roundTo": 100,
+        "specified": 100,
+    },
+    {
+        "code": "EUR",
+        "name": "Euro",
+        "symbol": "€",
+        "rule": "Round up to the nearest 0.95 EUR",
+        "roundTo": 0.95,
+        "specified": 1,
+    }
+];

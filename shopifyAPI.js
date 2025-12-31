@@ -1203,3 +1203,19 @@ fetch('https://api.ipify.org?format=json')
     console.log("Your IP address is:", data.ip);
   })
   .catch(error => console.error('Error fetching IP address:', error));
+
+
+fetch("https://admin.shopify.com/api/shopify/hemp-hash?operation=AdminProductDetails&type=query", {
+  "headers": {
+    "accept": "application/json",
+    "content-type": "application/json",
+
+  },
+  "body": JSON.stringify([
+
+  ]),
+  "method": "POST",
+}).then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
