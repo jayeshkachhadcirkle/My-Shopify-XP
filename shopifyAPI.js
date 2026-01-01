@@ -1055,11 +1055,10 @@ let metafieldData = {
   }
 }
 
-fetch(`${window.Shopify.routes.root}admin/api/2024-07/customers/838784506 2794/metafields.json`, {
+fetch(`${window.Shopify.routes.root}admin/api/2024-07/customers/8387845062794/metafields.json`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': 'app_token'
   },
   body: JSON.stringify(metafieldData)
 })
@@ -1080,7 +1079,6 @@ fetch(`${window.Shopify.routes.root}admin/api/2024-07/products/8542096982154/met
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': 'app_token'
   },
 })
   .then(response => response.json())

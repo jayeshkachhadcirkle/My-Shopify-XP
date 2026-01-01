@@ -106,18 +106,6 @@ cart-table-lft
 w-full mx-auto my-auto swiper swiper_card
 
 
-klaviyo public innovacare
-Y9kHYT
-
-yello form
-RURQvM
-
-
-window._klOnsite = window._klOnsite || [];
-window._klOnsite.push(['openForm', 'UYEpe6']);
-
-window._klOnsite = window._klOnsite || [];
-window._klOnsite.push(['openForm', 'RURQvM']);
 
 
 https://static-tracking.klaviyo.com/onsite/js/static.5f280103f51ea7c7fff7.js?cb=2
