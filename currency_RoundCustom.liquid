@@ -1,0 +1,63 @@
+{% assign iso_code = localization.country.currency.iso_code %}
+{% assign round_by = 1 %}
+
+{% case iso_code %}
+  {% when 'INR' %}
+    {% assign round_by = 10 %}
+  {% when 'USD' %}
+    {% assign round_by = 1 %}
+  {% when 'AFN' %}
+    {% assign round_by = 100 %}
+  {% when 'KHR' %}
+    {% assign round_by = 100 %}
+  {% when 'COP' %}
+    {% assign round_by = 100 %}
+  {% when 'EUR' %}
+    {% assign round_by = 1 %}
+  {% else %}
+
+{% endcase %}
+
+{% assign round_by = round_by | times: 100 %}
+
+Currency : {{ shop.currency }}
+
+<div style="display: flex;">
+  {% for product in section.settings.pl %}
+    <div style="display: flex; flex-direction: column; border: 1px solid;">
+      <p>Title : {{ product.title }}</p>
+
+      <p>Code : {{ localization.country.currency.iso_code }}</p>
+
+      <p>Price : {{ product.price | money }}</p>
+
+      {% assign rounded_price2 = product.price
+        | times: 1.0
+        | divided_by: round_by
+        | ceil
+        | times: round_by
+        | money_without_currency
+      %}
+
+      <p>Price6 : {{ rounded_price2 }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Currency",
+  "settings": [
+    {
+      "type": "product_list",
+      "id": "pl",
+      "label": "Pro List"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Currency"
+    }
+  ]
+}
+{% endschema %}

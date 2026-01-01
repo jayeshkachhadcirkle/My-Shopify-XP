@@ -45,6 +45,6 @@ const currencies = [
         "symbol": "€",
         "rule": "Round up to the nearest 0.95 EUR",
         "roundTo": 0.95,
-        "specified": 1,
+        "specified": 100,
     }
 ];

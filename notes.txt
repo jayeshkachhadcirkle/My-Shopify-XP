@@ -127,3 +127,17 @@ https://static.klaviyo.com/onsite/js/runtime.70f445fa6fe60b1119d2.js?cb=2
 
 
 https://prnt.sc/p0dglk6rzZ9x
+
+
+
+
+      <p>Price2 : {{ product.price | money_without_currency }}</p>
+      <p>Price3 : {{ product.price | money_without_currency | replace: ',', '' }}</p>
+      
+      <p>Price4 : {{ product.price | times: 1.0 | divided_by: 100.0 }}</p>
+      {% comment %} <p>Price2 : {{ rounded_price }}</p>
+      <p>Price2 : {{ rounded_price }}</p> {% endcomment %}
+      
+      {% assign rounded_price = product.price | times: 1.0 | divided_by: 100.0 | ceil | times: 100 | money %}
+      <p>Price5 : {{ rounded_price }}</p>
+      
