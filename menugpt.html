@@ -103,10 +103,13 @@
         }
 
         .price {
+            display: flex;
             margin-top: .3rem;
             font-size: 1.05rem;
             font-weight: 800;
+            justify-content: space-between;
             color: var(--primary);
+            align-items: center;
         }
 
         /* RIGHT */
@@ -125,9 +128,6 @@
 
         /* ===== Quantity Overlay ===== */
         .qty {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
             background: #fff;
             border-radius: 12px;
             display: flex;
@@ -234,19 +234,23 @@
         `).join("")}
       </div>
 
-      <div class="price">₹<span>${price}</span></div>
+      <div class="price"><span>₹${price}</span>
+
+        <div class="qty">
+          <button>-</button>
+          <span>1</span>
+          <button>+</button>
+        </div>
+
+        </div>
     </div>
 
     <div class="card-right">
       <img src="${item.image}" alt="${item.name}">
       
+
     </div>
 
-    <div class="qty">
-        <button>-</button>
-        <span>1</span>
-        <button>+</button>
-      </div>
   `;
 
             // Variant change
