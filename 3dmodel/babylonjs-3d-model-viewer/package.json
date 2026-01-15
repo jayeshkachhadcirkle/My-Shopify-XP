@@ -4,7 +4,7 @@
   "description": "A simple 3D model viewer using Babylon.js",
   "main": "src/main.js",
   "scripts": {
-    "start": "live-server src"
+    "start": "node init && live-server src"
   },
   "dependencies": {},
   "devDependencies": {
