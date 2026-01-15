@@ -129,3 +129,4 @@ https://prnt.sc/p0dglk6rzZ9x
       {% assign rounded_price = product.price | times: 1.0 | divided_by: 100.0 | ceil | times: 100 | money %}
       <p>Price5 : {{ rounded_price }}</p>
       
+      

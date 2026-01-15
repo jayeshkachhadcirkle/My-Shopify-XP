@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu</title>
+
+    <style>
+        :root {
+            --primary: #006a63;
+            --primary-soft: #e6f3f2;
+            --text: #1f2933;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f7fafa;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: auto;
+            padding: 1rem;
+        }
+
+        /* ===== Skeleton ===== */
+        .skeleton {
+            height: 130px;
+            border-radius: 14px;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+            background-size: 400% 100%;
+            animation: shimmer 1.4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: .75rem;
+            display: flex;
+            gap: .75rem;
+            margin-bottom: 1rem;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .06);
+        }
+
+        /* LEFT */
+        .card-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: .45rem;
+        }
+
+        .title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: .65rem;
+            font-weight: 700;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            padding: .15rem .4rem;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        .variants label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .8rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .35rem .5rem;
+        }
+
+        .variants input {
+            accent-color: var(--primary);
+        }
+
+        .price {
+            margin-top: .3rem;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* RIGHT */
+        .card-right {
+            width: 110px;
+            height: 110px;
+            position: relative;
+        }
+
+        .card-right img {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            object-fit: cover;
+        }
+
+        /* ===== Quantity Overlay ===== */
+        .qty {
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .25rem .4rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+        }
+
+        .qty button {
+            width: 26px;
+            height: 26px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .qty span {
+            min-width: 16px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Add button */
+        .add-btn {
+            margin-top: .4rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: .45rem;
+            font-size: .85rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+    </div>
+
+    <script>
+        const data = [
+            {
+                "id": 5541,
+                "name": "Plain Margherita",
+                "variants": [
+                    { "name": "Medium 8\"", "price": 180 },
+                    { "name": "Large 10\"", "price": 230 }
+                ],
+                "image": "https://b.zmtcdn.com/data/pictures/2/21538002/88f346dd9f8af7d74203f756bdd784f0_o2_featured_v2.jpg"
+            },
+            {
+                "id": 5542,
+                "name": "Italian",
+                "variants": [
+                    { "name": "Medium 8\"", "price": 200 },
+                    { "name": "Large 10\"", "price": 250 }
+                ],
+                "image": "https://b.zmtcdn.com/data/pictures/8/21064108/b307d16e7ccc4ba97754878634bb73d7_o2_featured_v2.jpg"
+            },
+            {
+                "id": 5543,
+                "name": "Italian2",
+                "variants": [
+                    { "name": "Medium 8\"", "price": 200 },
+                ],
+                "image": "https://b.zmtcdn.com/data/pictures/8/21064108/b307d16e7ccc4ba97754878634bb73d7_o2_featured_v2.jpg"
+            }
+        ];
+
+        const app = document.getElementById("app");
+
+        setTimeout(() => {
+            app.innerHTML = "";
+            data.forEach(renderItem);
+        }, 800);
+
+        function renderItem(item) {
+            let price = item.variants[0].price;
+            let qty = 1;
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+    <div class="card-left">
+      <div class="title">${item.name}</div>
+      <span class="badge">VEG</span>
+
+      <div class="variants">
+        ${item.variants.map((v, i) => `
+          <label>
+            <input type="radio" name="v-${item.id}" ${i === 0 ? "checked" : ""}>
+            <span>${v.name}</span>
+            <strong>₹${v.price}</strong>
+          </label>
+        `).join("")}
+      </div>
+
+      <div class="price">₹<span>${price}</span></div>
+    </div>
+
+    <div class="card-right">
+      <img src="${item.image}" alt="${item.name}">
+      <div class="qty">
+        <button>-</button>
+        <span>1</span>
+        <button>+</button>
+      </div>
+    </div>
+  `;
+
+            // Variant change
+            card.querySelectorAll("input").forEach((r, i) => {
+                r.onchange = () => {
+                    price = item.variants[i].price;
+                    update();
+                };
+            });
+
+            // Qty
+            const qtySpan = card.querySelector(".qty span");
+            const [minus, plus] = card.querySelectorAll(".qty button");
+
+            minus.onclick = () => { if (qty > 1) { qty--; update(); } };
+            plus.onclick = () => { qty++; update(); };
+
+            function update() {
+                qtySpan.textContent = qty;
+                card.querySelector(".price span").textContent = price * qty;
+            }
+
+            app.appendChild(card);
+        }
+    </script>
+</body>
+
+</html>
